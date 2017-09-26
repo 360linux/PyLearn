@@ -6,10 +6,10 @@
 # @File    : VMSplitCheck.py
 # @Software: PyCharm
 
-import  commands
 from credentials import get_nova_creds
 from novaclient import  client
 import  libvirt
+import re
 
 
 creds=get_nova_creds()
