@@ -5,6 +5,7 @@
 # @File    : credentials.py
 import os
 import commands
+import sys
 
 def get_nova_creds():
     d = {}
@@ -15,5 +16,8 @@ def get_nova_creds():
         d['auth_url'] = os.environ['OS_AUTH_URL']
         d['project_id'] = os.environ['OS_TENANT_NAME']
         d['region_name']= os.environ['OS_REGION_NAME']
-    return d
+        return d
+    else:
+        print "failed to get nova creds,to exit"
+        sys.exit(5)
 
