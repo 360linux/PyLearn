@@ -44,4 +44,11 @@ def getVMList()
     return InstanceNameList,HyperDict
 
 def VMSplitCheck(instancelist):
-
+    c=Counter(instancelist)
+    SplitList=[]
+    for k,v in c.iteritems():
+        if v>=2:
+            SplitList.append(k)
+    if len(SplitList)==0:
+        print "no split vm"
+         
