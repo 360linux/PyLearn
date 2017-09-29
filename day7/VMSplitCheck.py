@@ -32,7 +32,7 @@ def getVM(node):
         vminfo=virtcon.lookupByID(id)
         q.put((node,vminfo.name()))
 
-def getVMList()
+def getVMList():
     InstanceNameList=[]
     # a=getHypervisor()
     # HyperDict = {}.fromkeys(a, [])
@@ -43,12 +43,39 @@ def getVMList()
         HyperDict[node].append(vm)
     return InstanceNameList,HyperDict
 
-def VMSplitCheck(instancelist):
+def VMSplitCheck(instancelist,nodedict):
     c=Counter(instancelist)
     SplitList=[]
+    SplitDict=defaultdict(list)
     for k,v in c.iteritems():
         if v>=2:
             SplitList.append(k)
     if len(SplitList)==0:
         print "no split vm"
-         
+    else:
+       for i in SplitList:
+           for k,v in nodedict.iteritems():
+               if i in v:
+                   SplitDict[i].append(k)
+    return SplitDict
+
+def main():
+    hypername=getHypervisor()
+    p=Pool()
+    for i in hypername:
+        p.apply_async(getVM,args=(i,))
+    p.close()
+    p.join()
+
+    inslist,hydict=getVMList()
+    vmsplit=VMSplitCheck(inslist,hydict)
+    print vmsplit
+
+
+
+if "__name__" =="__main__":
+    main()
+
+
+
+
