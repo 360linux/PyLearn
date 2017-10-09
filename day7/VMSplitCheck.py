@@ -44,9 +44,9 @@ def getVMList():
     return InstanceNameList,HyperDict
 
 def VMSplitCheck(instancelist,nodedict):
-    c=Counter(instancelist)
     SplitList=[]
     SplitDict=defaultdict(list)
+    c=Counter(instancelist)
     for k,v in c.iteritems():
         if v>=2:
             SplitList.append(k)
