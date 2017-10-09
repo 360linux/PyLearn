@@ -20,4 +20,3 @@ def get_nova_creds():
     else:
         print "failed to get nova creds,to exit"
         sys.exit(5)
-
