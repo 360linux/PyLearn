@@ -4,13 +4,37 @@
 # @Author  : liping
 # @File    : VMSplitCheck.py
 import re
+import os
+import sys
 import libvirt
-from credentials import get_nova_creds
 from novaclient import client
 from multiprocessing import Pool,Queue
 from collections import Counter,defaultdict
 
 q=Queue()
+EnvFile='/root/openrc'
+
+def get_nova_creds():
+    d={}
+    try:
+        pattern_save=re.compile(r'^export.*=.*')
+        pattern_split=re.compile(r'=')
+        with open(EnvFile,'r') as f:
+            for i in f.readlines():
+                match=pattern_save.search(i)
+                if match:
+                    temp_str = match.group(0).strip("export").strip()
+                    environ_value_dic = pattern_split.split(temp_str)
+                    os.environ[environ_value_dic[0]] = environ_value_dic[1].strip("'")
+        d['username'] = os.environ['OS_USERNAME']
+        d['api_key'] = os.environ['OS_PASSWORD']
+        d['auth_url'] = os.environ['OS_AUTH_URL']
+        d['project_id'] = os.environ['OS_TENANT_NAME']
+        d['region_name']= os.environ['OS_REGION_NAME']
+        return d
+    except:
+        print  "error"
+        sys.exit(5)
 
 def getHypervisor():
     HypervisorHostname = []
@@ -26,7 +50,7 @@ def getHypervisor():
 def getVM(node):
     try:
         virtcon=libvirt.open("qemu+ssh://%s/system" %node)
-    except libvirtError,e:
+    except:
         print "wrong to connect"
     for id  in virtcon.listDomainsID():
         vminfo=virtcon.lookupByID(id)
